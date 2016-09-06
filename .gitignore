@@ -1,3 +1,4 @@
 # Ignore subversion meta directories
 .svn/
 tblib/
+libeasy_deb/
