@@ -23,7 +23,7 @@
 namespace tbsys {
 
 /*
- * 得到当前时间
+ * 锟矫碉拷锟斤拷前时锟斤拷
  */
 int64_t CTimeUtil::getTime() {
     struct timeval t;
@@ -38,7 +38,7 @@ int64_t CTimeUtil::getMonotonicTime() {
 }
 
 /**
- * 把int转成20080101101010的格式
+ * 锟斤拷int转锟斤拷20080101101010锟侥革拷式
  */ 
 char *CTimeUtil::timeToStr(time_t t, char *dest)
 {
@@ -56,14 +56,14 @@ char *CTimeUtil::timeToStr(time_t t, char *dest)
 }
 
 /**
- * 把字节串转成时间(当地时间)
+ * 锟斤拷锟街节达拷转锟斤拷时锟斤拷(锟斤拷锟斤拷时锟斤拷)
  */
-int CTimeUtil::strToTime(char *str)
+int CTimeUtil::strToTime(const char *str)
 {
   if (str == NULL || strlen(str) != 14) {
     return 0;
   }
-  char *p = str;
+  const char *p = str;
   while((*p)) {
     if ((*p) < '0' || (*p) > '9') return 0;
     p ++;

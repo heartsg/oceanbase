@@ -1,4 +1,17 @@
 cmake_minimum_required(VERSION 2.8.9)
 
 add_subdirectory(sql)
-# common obmysql sstable compactsstable compactsstablev2 rootserver mergeserver chunkserver updateserver compactsstable lsync client proxyserver importserver mrsstable
+add_subdirectory(common)
+add_subdirectory(obmysql)
+add_subdirectory(sstable)
+add_subdirectory(compactsstable)
+add_subdirectory(compactsstablev2)
+add_subdirectory(rootserver)
+add_subdirectory(mergeserver)
+add_subdirectory(chunkserver)
+add_subdirectory(updateserver)
+add_subdirectory(lsync)
+add_subdirectory(client)
+add_subdirectory(proxyserver)
+#add_subdirectory(importserver)
+#add_subdirectory(mrsstable)

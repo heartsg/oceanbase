@@ -175,7 +175,7 @@ int ObWhenFilter::open()
           }
         }
         buf[OB_MAX_RESULT_MESSAGE_LENGTH == pos ? pos - 1 : pos] = '\0';
-        TBSYS_LOG(USER_ERROR, buf);
+        TBSYS_LOG(USER_ERROR, "%s", buf);
       }
     } // end for
     // close when functions when out of use wheather successed or failed

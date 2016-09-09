@@ -89,10 +89,10 @@ void STDCALL mysql_server_end(void)
 }
 
 //do nothing here same as libmysql
-MYSQL_PARAMETERS *STDCALL mysql_get_parameters(void)
-{
-  return (*g_func_set.real_mysql_get_parameters)();
-}
+//MYSQL_PARAMETERS *STDCALL mysql_get_parameters(void)
+//{
+//  return (*g_func_set.real_mysql_get_parameters)();
+//}
 
 my_bool STDCALL mysql_thread_init(void)
 {

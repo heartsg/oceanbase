@@ -281,7 +281,6 @@ namespace oceanbase
       const uint64_t *p = reinterpret_cast<const uint64_t*>(&ip.v6_[2]);
       return *p;
     }
-
     void ObServer::set_max()
     {
       ip.v4_ = UINT32_MAX;

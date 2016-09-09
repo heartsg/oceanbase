@@ -17,11 +17,11 @@
 
 namespace tbsys {
     /**
-     * rootPath: queueµÄrootÂ·¾¶
+     * rootPath: queueï¿½ï¿½rootÂ·ï¿½ï¿½
      * queueName: 
-     * maxFileSize: ×î´óÎÄ¼þ´óÐ¡
+     * maxFileSize: ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½Ð¡
      */
-    CFileQueue::CFileQueue(char *rootPath, char *queueName, int maxFileSize)
+    CFileQueue::CFileQueue(const char *rootPath, const char *queueName, int maxFileSize)
     {
         char tmp[256];
         sprintf(tmp, "%s/%s", rootPath, queueName);
@@ -31,28 +31,28 @@ namespace tbsys {
         m_readFd = -1;
         m_writeFd = -1;
         
-        // ´´½¨Ä¿Â¼
+        // ï¿½ï¿½ï¿½ï¿½Ä¿Â¼
         if (CFileUtil::mkdirs(m_queuePath) == false) {
-            TBSYS_LOG(ERROR, "´´½¨Ä¿Â¼Ê§°Ü: %s", m_queuePath);
+            TBSYS_LOG(ERROR, "ï¿½ï¿½ï¿½ï¿½Ä¿Â¼Ê§ï¿½ï¿½: %s", m_queuePath);
             return;
         }
         
-        // Í·ÎÄ¼þ
+        // Í·ï¿½Ä¼ï¿½
         sprintf(tmp, "%s/header.dat", m_queuePath);
         m_infoFd = open(tmp, O_RDWR|O_CREAT, 0600);
         if (m_infoFd == -1) {
-            TBSYS_LOG(ERROR, "´ò¿ªÎÄ¼þÊ§°Ü: %s", tmp);
+            TBSYS_LOG(ERROR, "ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½Ê§ï¿½ï¿½: %s", tmp);
             return;
         }
         
-        // ¶Á½øÍ·ÐÅÏ¢
+        // ï¿½ï¿½ï¿½ï¿½Í·ï¿½ï¿½Ï¢
         if (read(m_infoFd, &m_head, sizeof(m_head)) != sizeof(m_head)) {
             memset(&m_head, 0, sizeof(m_head));
             m_head.read_seqno = 1;
             m_head.write_seqno = 1;
         }
         
-        // ´ò¿ªÐ´
+        // ï¿½ï¿½ï¿½ï¿½Ð´
         if (openWriteFile() == EXIT_FAILURE) {
             return;
         }
@@ -62,21 +62,21 @@ namespace tbsys {
             m_head.write_filesize = st.st_size;
         }
 
-        // ´ò¿ª¶Á
+        // ï¿½ò¿ª¶ï¿½
         if (openReadFile() == EXIT_FAILURE) {
             close(m_writeFd);
             m_writeFd = -1;
             return;
         }
 
-        // »Ö¸´¼ÇÂ¼
+        // ï¿½Ö¸ï¿½ï¿½ï¿½Â¼
         if (m_head.exit_status == 0) {
             recoverRecord();
         }
         m_head.exit_status = 0;         
     }
     /**
-     * Îö¹¹
+     * ï¿½ï¿½ï¿½ï¿½
      */
     CFileQueue::~CFileQueue(void)
     {
@@ -102,14 +102,14 @@ namespace tbsys {
     }
     
     /**
-     * Ð´ÈëÒ»¼ÇÂ¼
+     * Ð´ï¿½ï¿½Ò»ï¿½ï¿½Â¼
      */
     int CFileQueue::push(void *data, int len)
     {
         if (m_writeFd == -1) {
             openWriteFile();
             if (m_writeFd == -1) {
-                TBSYS_LOG(WARN, "ÎÄ¼þÃ»´ò¿ª: %s:%u", m_queuePath, m_head.write_seqno);
+                TBSYS_LOG(WARN, "ï¿½Ä¼ï¿½Ã»ï¿½ï¿½ï¿½ï¿½: %s:%u", m_queuePath, m_head.write_seqno);
                 return EXIT_FAILURE;
             }
         }
@@ -130,7 +130,7 @@ namespace tbsys {
         item->flag = TBFQ_FILE_QUEUE_FLAG;
         memcpy(&(item->data[0]), data, len);
         
-        // Èç¹ûÎÄ¼þ´óÓÚÁËÖØÐÂ´ò¿ªÒ»¸ö
+        // ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â´ï¿½ï¿½ï¿½Ò»ï¿½ï¿½
         if (m_head.write_filesize >= m_maxFileSize) {
             m_head.write_seqno ++;
             m_head.write_filesize = 0;
@@ -144,12 +144,12 @@ namespace tbsys {
             m_head.write_filesize += size;
         }
         free(buffer);
-        if (ret != size) { // Ð´Ê§°Ü
-            TBSYS_LOG(WARN, "Ð´Ê§°Ü: %s, fd: %d, len: %d, %d<>%d", 
+        if (ret != size) { // Ð´Ê§ï¿½ï¿½
+            TBSYS_LOG(WARN, "Ð´Ê§ï¿½ï¿½: %s, fd: %d, len: %d, %d<>%d", 
                 m_queuePath, m_writeFd, len, ret, size);
             ret = size - ret;
             if (ret>0 && ret<=size && size<m_maxFileSize) {
-                TBSYS_LOG(WARN, "Ìø¹ý%d¸ö×Ö½ÚÐ´", ret);
+                TBSYS_LOG(WARN, "ï¿½ï¿½ï¿½ï¿½%dï¿½ï¿½ï¿½Ö½ï¿½Ð´", ret);
                 lseek(m_writeFd, ret, SEEK_CUR);
             }
             return EXIT_FAILURE;
@@ -159,14 +159,14 @@ namespace tbsys {
     }
     
     /**
-     * ¶Á³öÒ»¼ÇÂ¼, µ÷ÓÃ³ÌÐòÒª¸ºÔðÊÍ·Å
+     * ï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½Â¼, ï¿½ï¿½ï¿½Ã³ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½Í·ï¿½
      */
     queue_item *CFileQueue::pop(uint32_t index)
     {
         if (m_readFd == -1) {
             openReadFile();
             if (m_readFd == -1) {
-                TBSYS_LOG(WARN, "ÎÄ¼þÃ»´ò¿ª: %s:%d", m_queuePath, m_head.read_seqno);
+                TBSYS_LOG(WARN, "ï¿½Ä¼ï¿½Ã»ï¿½ï¿½ï¿½ï¿½: %s:%d", m_queuePath, m_head.read_seqno);
                 return NULL;
             }
         }
@@ -178,15 +178,15 @@ namespace tbsys {
         while(retryReadCount<3) {
             int retSize = read(m_readFd, &size, sizeof(int));
             if (retSize < 0) {
-                TBSYS_LOG(ERROR, "¶Á³ö´í, m_readFd:%d, %s(%d)", m_readFd, strerror(errno), errno);
+                TBSYS_LOG(ERROR, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, m_readFd:%d, %s(%d)", m_readFd, strerror(errno), errno);
                 break;
             }
             if (retSize == sizeof(int)) {
                 size -= sizeof(int);
-                // ¼ì²ésize
+                // ï¿½ï¿½ï¿½ï¿½size
                 if (size < (int)sizeof(queue_item) || size > (int)TBFQ_MAX_FILE_SIZE) {
                     int curPos = (int)lseek(m_readFd, 0-retSize, SEEK_CUR);
-                    TBSYS_LOG(WARN, "¶Á³öµÄsize²»ÕýÈ·:%d,curPos:%d,readOff:%d,retry:%d,seqno:%u,m_readFd:%d", 
+                    TBSYS_LOG(WARN, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½sizeï¿½ï¿½ï¿½ï¿½È·:%d,curPos:%d,readOff:%d,retry:%d,seqno:%u,m_readFd:%d", 
                         size, curPos, m_head.read_offset, retryReadCount, m_head.read_seqno,m_readFd);
                     retryReadCount ++;
                     if (m_writeFd != -1 && m_head.read_seqno == m_head.write_seqno) {
@@ -194,13 +194,13 @@ namespace tbsys {
                     }
                     continue;
                 }
-                // ·ÖÅäÄÚ´æ
+                // ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½
                 item = (queue_item*) malloc(size);
                 assert(item != NULL);
                 if ((ret = read(m_readFd, item, size)) != size) {
-                    // ÖØÐÂ¶Á
+                    // ï¿½ï¿½ï¿½Â¶ï¿½
                     int64_t curPos = lseek(m_readFd, 0-ret-retSize, SEEK_CUR);
-                    TBSYS_LOG(WARN, "¶ÁÎÄ¼þ²»ÕýÈ·:%d<>%d,curPos:%d,readOff:%d,retry:%d,seqno:%u,m_readFd:%d", 
+                    TBSYS_LOG(WARN, "ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½È·:%d<>%d,curPos:%ld,readOff:%d,retry:%d,seqno:%u,m_readFd:%d", 
                         ret, size, curPos, m_head.read_offset, retryReadCount, m_head.read_seqno,m_readFd);
                     retryReadCount ++;
                     free(item);
@@ -210,11 +210,11 @@ namespace tbsys {
                     }
                     continue;
                 }
-                // ¼ì²éflag
+                // ï¿½ï¿½ï¿½ï¿½flag
                 if (item->flag != TBFQ_FILE_QUEUE_FLAG) {
-                     // ÖØÐÂ¶Á
+                     // ï¿½ï¿½ï¿½Â¶ï¿½
                     int64_t curPos = lseek(m_readFd, 0-ret-retSize, SEEK_CUR);
-                    TBSYS_LOG(WARN, "flag²»ÕýÈ·:item->flag(%d)<>FLAG(%d),curPos:%d,readOff:%d,retry:%d,seqno:%u,m_readFd:%d", 
+                    TBSYS_LOG(WARN, "flagï¿½ï¿½ï¿½ï¿½È·:item->flag(%d)<>FLAG(%d),curPos:%ld,readOff:%d,retry:%d,seqno:%u,m_readFd:%d", 
                         item->flag, TBFQ_FILE_QUEUE_FLAG, curPos, m_head.read_offset, 
                         retryReadCount, m_head.read_seqno,m_readFd);
                     retryReadCount ++;
@@ -225,11 +225,11 @@ namespace tbsys {
                     }
                     continue;
                 }
-                // ¼ì²élen
+                // ï¿½ï¿½ï¿½ï¿½len
                 if (item->len + (int)sizeof(queue_item) != size) {
-                    // ÖØÐÂ¶Á
+                    // ï¿½ï¿½ï¿½Â¶ï¿½
                     int64_t curPos = lseek(m_readFd, 0-ret-retSize, SEEK_CUR);
-                    TBSYS_LOG(WARN, "¶Á³öµÄlen²»ÕýÈ·:%d<>%d,curPos:%d,readOff:%d,retry:%d,seqno:%u,m_readFd:%d", 
+                    TBSYS_LOG(WARN, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½lenï¿½ï¿½ï¿½ï¿½È·:%ld<>%d,curPos:%ld,readOff:%d,retry:%d,seqno:%u,m_readFd:%d", 
                         item->len + sizeof(queue_item), size, curPos, m_head.read_offset, 
                         retryReadCount, m_head.read_seqno,m_readFd);
                     retryReadCount ++;
@@ -247,7 +247,7 @@ namespace tbsys {
                 m_head.read_offset += (size + sizeof(int));
                 break;
             } else if (m_head.write_seqno > m_head.read_seqno) {
-                // É¾³ý´¦ÀíÍêµÄÎÄ¼þ
+                // É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½
                 deleteReadFile();
                 m_head.read_seqno ++;
                 m_head.read_offset = 0;
@@ -265,7 +265,7 @@ namespace tbsys {
                 break;
             }
         }
-        if (retryReadCount>=3) { // Á¬½ÓÊ§°ÜÁËÈý´Î,ÒÆµ½×îºó
+        if (retryReadCount>=3) { // ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,ï¿½Æµï¿½ï¿½ï¿½ï¿½ï¿½
             backup(index);
             if (m_head.write_seqno > m_head.read_seqno)
             {
@@ -282,7 +282,7 @@ namespace tbsys {
     }
     
     /**
-     * Çå¿Õ¶ÓÁÐ
+     * ï¿½ï¿½ï¿½Õ¶ï¿½ï¿½ï¿½
      */
     int CFileQueue::clear()
     {
@@ -297,7 +297,7 @@ namespace tbsys {
     }
     
     /**
-     * ÊÇ·ñ¿ÕÁË
+     * ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½
      */
     int CFileQueue::isEmpty()
     {
@@ -305,7 +305,7 @@ namespace tbsys {
     }
             
     /**
-     * ¼º´¦ÀíÍêÁË
+     * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
      */
     void CFileQueue::finish(uint32_t index) {
         unsettle *pos = &(m_head.pos[index % TBFQ_MAX_THREAD_COUNT]);
@@ -314,7 +314,7 @@ namespace tbsys {
     }
     
     /**
-     * ±¸·ÝÎÄ¼þ£¬½øÐÐºóÃæ·ÖÎö
+     * ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ðºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
      */
     void CFileQueue::backup(uint32_t index) {
         int curPos = (int)lseek(m_readFd, 0, SEEK_CUR);
@@ -329,7 +329,7 @@ namespace tbsys {
     }
     
     /******************************************
-     * ´ò¿ªÊý¾ÝÎÄ¼þÐ´
+     * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½Ð´
      */
     int CFileQueue::openWriteFile()
     {
@@ -342,13 +342,13 @@ namespace tbsys {
         sprintf(tmp, "%s/%08u.dat", m_queuePath, m_head.write_seqno);
         m_writeFd = open(tmp, O_WRONLY|O_CREAT|O_APPEND, 0600);
         if (m_writeFd == -1) {
-            TBSYS_LOG(ERROR, "ÎÄ¼þ´ò¿ªÊ§°Ü: %s", tmp);
+            TBSYS_LOG(ERROR, "ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½: %s", tmp);
             return EXIT_FAILURE;
         }
         return EXIT_SUCCESS;
     }
     /**
-     * É¾³ý´¦ÀíÍêµÄÎÄ¼þ
+     * É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½
      */
     int CFileQueue::deleteReadFile()
     {
@@ -362,7 +362,7 @@ namespace tbsys {
         return EXIT_SUCCESS;
     }
     /**
-     * ´ò¿ªÊý¾ÝÎÄ¼þ¶Á
+     * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½
      */
     int CFileQueue::openReadFile()
     {
@@ -374,11 +374,11 @@ namespace tbsys {
         sprintf(tmp, "%s/%08u.dat", m_queuePath, m_head.read_seqno);
         m_readFd = open(tmp, O_RDONLY, 0600);
         if (m_readFd == -1) {
-            TBSYS_LOG(ERROR, "ÎÄ¼þ´ò¿ªÊ§°Ü: %s", tmp);
+            TBSYS_LOG(ERROR, "ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½: %s", tmp);
             return EXIT_FAILURE;
         }
         lseek(m_readFd, m_head.read_offset, SEEK_SET);
-        TBSYS_LOG(INFO, "´ò¿ªÏÂÒ»ÎÄ¼þ:%s,wseq:%u,rseq:%u,roffset:%d,m_readFd:%d", 
+        TBSYS_LOG(INFO, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»ï¿½Ä¼ï¿½:%s,wseq:%u,rseq:%u,roffset:%d,m_readFd:%d", 
             tmp, m_head.write_seqno, m_head.read_seqno, m_head.read_offset, m_readFd);
         return EXIT_SUCCESS;
     }    
@@ -391,13 +391,13 @@ namespace tbsys {
         if (m_infoFd != -1) {
             lseek(m_infoFd, 0, SEEK_SET);
             if (write(m_infoFd, &m_head, sizeof(m_head)) != sizeof(m_head)) {
-                TBSYS_LOG(ERROR, "Ð´Ê§°Ü: %s", m_queuePath);
+                TBSYS_LOG(ERROR, "Ð´Ê§ï¿½ï¿½: %s", m_queuePath);
             }
         }
         return EXIT_SUCCESS;
     }
     /**
-     * »Ö¸´¼ÇÂ¼
+     * ï¿½Ö¸ï¿½ï¿½ï¿½Â¼
      */
     void CFileQueue::recoverRecord() {
         char tmp[256];

@@ -7,7 +7,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${TMP_DIR})
 set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${TMP_DIR})
 
 if (CMAKE_COMPILER_IS_GNUCXX)
-    set(GCC_CXX_FLAGS "-O3 -Wall")
+    set(GCC_CXX_FLAGS "-O3 -Wall -Wno-deprecated -Wno-unused-result -Wno-unused-but-set-variable")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${GCC_CXX_FLAGS}")
     set(GCC_LINK_FLAGS "-pthread -lm -lrt")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${GCC_LINK_FLAGS}")
@@ -19,11 +19,9 @@ add_library(tbnet_static STATIC ${SOURCES})
 add_library(tbnet SHARED ${SOURCES})
 target_link_libraries( tbnet_static $ENV{TBLIB_ROOT}/lib/libtbsys.so )
 target_link_libraries( tbnet $ENV{TBLIB_ROOT}/lib/libtbsys.so )
+set_target_properties( tbnet_static PROPERTIES OUTPUT_NAME tbnet )
 
-add_custom_command(
-    TARGET tbnet_static POST_BUILD
-    COMMAND mv ${TMP_DIR}/libtbnet_static.a ${TMP_DIR}/libtbnet.a
-)
+
 add_custom_command(
     TARGET tbnet POST_BUILD
     COMMAND ln -sf libtbnet.so ${TMP_DIR}/libtbnet.so.0

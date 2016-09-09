@@ -21,7 +21,7 @@ atomic_t ChannelPool::_globalChannelId = {1};
 atomic_t ChannelPool::_globalTotalCount = {0};
 
 /*
- * ¹¹Ôìº¯Êý
+ * ï¿½ï¿½ï¿½ìº¯ï¿½ï¿½
  */
 ChannelPool::ChannelPool() {
     _freeListHead = NULL;
@@ -32,7 +32,7 @@ ChannelPool::ChannelPool() {
 }
 
 /*
- * Îö¹¹º¯Êý
+ * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
  */
 ChannelPool::~ChannelPool() {
     std::list<Channel*>::iterator it = _clusterList.begin();
@@ -43,18 +43,18 @@ ChannelPool::~ChannelPool() {
 }
 
 /*
- * µÃµ½Ò»¸öÐÂµÄchannel
+ * ï¿½Ãµï¿½Ò»ï¿½ï¿½ï¿½Âµï¿½channel
  *
- * @return Ò»¸öChannel
+ * @return Ò»ï¿½ï¿½Channel
  */
 Channel *ChannelPool::allocChannel() {
     Channel *channel = NULL;
 
     _mutex.lock();
-    if (_freeListHead == NULL) { // Èç¹ûÊÇ¿Õ£¬ÐÂ·ÖÅäÒ»Ð©·Åµ½freeListÖÐ
+    if (_freeListHead == NULL) { // ï¿½ï¿½ï¿½ï¿½ï¿½Ç¿Õ£ï¿½ï¿½Â·ï¿½ï¿½ï¿½Ò»Ð©ï¿½Åµï¿½freeListï¿½ï¿½
         assert(CHANNEL_CLUSTER_SIZE>2);
         Channel *channelCluster = new Channel[CHANNEL_CLUSTER_SIZE];
-        TBSYS_LOG(DEBUG, "·ÖÅäµÄChannel×ÜÊý:%d (%d)", atomic_add_return(CHANNEL_CLUSTER_SIZE, &_globalTotalCount), sizeof(Channel));
+        TBSYS_LOG(DEBUG, "ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Channelï¿½ï¿½ï¿½ï¿½:%d (%ld)", atomic_add_return(CHANNEL_CLUSTER_SIZE, &_globalTotalCount), sizeof(Channel));
         _clusterList.push_back(channelCluster);
         _freeListHead = _freeListTail = &channelCluster[1];
         for (int i = 2; i < CHANNEL_CLUSTER_SIZE; i++) {
@@ -64,9 +64,9 @@ Channel *ChannelPool::allocChannel() {
         }
         _freeListHead->_prev = NULL;
         _freeListTail->_next = NULL;
-        channel = &channelCluster[0];   // °ÑµÚÒ»¸öÔªËØÄÃ¹ýÀ´Ö±½ÓÓÃ, ²»·Åµ½freelistÖÐ
+        channel = &channelCluster[0];   // ï¿½Ñµï¿½Ò»ï¿½ï¿½Ôªï¿½ï¿½ï¿½Ã¹ï¿½ï¿½ï¿½Ö±ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½Åµï¿½freelistï¿½ï¿½
     } else {
-        // ´ÓÁ´Í·È¡³ö
+        // ï¿½ï¿½ï¿½ï¿½Í·È¡ï¿½ï¿½
         channel = _freeListHead;
         _freeListHead = _freeListHead->_next;
         if (_freeListHead != NULL) {
@@ -76,7 +76,7 @@ Channel *ChannelPool::allocChannel() {
         }
     }
 
-    // °Ñchannel·Åµ½_useListÖÐ
+    // ï¿½ï¿½channelï¿½Åµï¿½_useListï¿½ï¿½
     channel->_prev = _useListTail;
     channel->_next = NULL;
     channel->_expireTime = TBNET_MAX_TIME+1;
@@ -99,7 +99,7 @@ Channel *ChannelPool::allocChannel() {
     channel->_handler = NULL;
     channel->_args = NULL;
 
-    // °Ñchannel·Åµ½hashmapÖÐ
+    // ï¿½ï¿½channelï¿½Åµï¿½hashmapï¿½ï¿½
     _useMap[id] = channel;
     if (_maxUseCount < (int)_useMap.size()) {
         _maxUseCount = _useMap.size();
@@ -110,9 +110,9 @@ Channel *ChannelPool::allocChannel() {
 }
 
 /*
- * ÊÍ·ÅÒ»¸öchannel
+ * ï¿½Í·ï¿½Ò»ï¿½ï¿½channel
  *
- * @param channel: ÒªÊÍ·ÅµÄchannel
+ * @param channel: Òªï¿½Í·Åµï¿½channel
  * @return
  */
 bool ChannelPool::freeChannel(Channel *channel) {
@@ -125,10 +125,10 @@ bool ChannelPool::freeChannel(Channel *channel) {
         return false;
     }
 
-    // É¾³ýµô
+    // É¾ï¿½ï¿½ï¿½ï¿½
     _useMap.erase(it);
 
-    // ´Ó_userListÉ¾³ý
+    // ï¿½ï¿½_userListÉ¾ï¿½ï¿½
     if (channel == _useListHead) { // head
         _useListHead = channel->_next;
     }
@@ -140,7 +140,7 @@ bool ChannelPool::freeChannel(Channel *channel) {
     if (channel->_next != NULL)
         channel->_next->_prev = channel->_prev;
 
-    // ¼ÓÈëµ½_freeList
+    // ï¿½ï¿½ï¿½ëµ½_freeList
     channel->_prev = _freeListTail;
     channel->_next = NULL;
     if (_freeListTail == NULL) {
@@ -161,7 +161,7 @@ bool ChannelPool::freeChannel(Channel *channel) {
 bool ChannelPool::appendChannel(Channel *channel) {
     _mutex.lock();
 
-    // ¼ÓÈëµ½_freeList
+    // ï¿½ï¿½ï¿½ëµ½_freeList
     channel->_prev = _freeListTail;
     channel->_next = NULL;
     if (_freeListTail == NULL) {
@@ -179,9 +179,9 @@ bool ChannelPool::appendChannel(Channel *channel) {
 }
 
 /*
- * ¸ù¾ÝID£¬ÕÒ³öÒ»¸öChannel
+ * ï¿½ï¿½ï¿½ï¿½IDï¿½ï¿½ï¿½Ò³ï¿½Ò»ï¿½ï¿½Channel
  *
- * @param  id: Í¨µÀID
+ * @param  id: Í¨ï¿½ï¿½ID
  * @reutrn Channel
  */
 Channel *ChannelPool::offerChannel(uint32_t id) {
@@ -194,7 +194,7 @@ Channel *ChannelPool::offerChannel(uint32_t id) {
         channel = it->second;
         _useMap.erase(it);
 
-        // ´Ó_userListÉ¾³ý
+        // ï¿½ï¿½_userListÉ¾ï¿½ï¿½
         if (channel == _useListHead) { // head
             _useListHead = channel->_next;
         }
@@ -214,15 +214,15 @@ Channel *ChannelPool::offerChannel(uint32_t id) {
 }
 
 /*
- * ´ÓuseListÖÐÕÒ³ö³¬Ê±µÄchannelµÄlist,²¢°ÑhashmapÖÐ¶ÔÓ¦µÄÉ¾³ý
+ * ï¿½ï¿½useListï¿½ï¿½ï¿½Ò³ï¿½ï¿½ï¿½Ê±ï¿½ï¿½channelï¿½ï¿½list,ï¿½ï¿½ï¿½ï¿½hashmapï¿½Ð¶ï¿½Ó¦ï¿½ï¿½É¾ï¿½ï¿½
  *
- * @param now: µ±Ç°Ê±¼ä
+ * @param now: ï¿½ï¿½Ç°Ê±ï¿½ï¿½
  */
 Channel* ChannelPool::getTimeoutList(int64_t now) {
     Channel *list = NULL;
 
     _mutex.lock();
-    if (_useListHead == NULL) { //ÊÇ¿Õ
+    if (_useListHead == NULL) { //ï¿½Ç¿ï¿½
         _mutex.unlock();
         return list;
     }
@@ -234,10 +234,10 @@ Channel* ChannelPool::getTimeoutList(int64_t now) {
         channel = channel->_next;
     }
 
-    // ÓÐ³¬Ê±µÄlist
+    // ï¿½Ð³ï¿½Ê±ï¿½ï¿½list
     if (channel != _useListHead) {
         list = _useListHead;
-        if (channel == NULL) {  // È«²¿³¬Ê±
+        if (channel == NULL) {  // È«ï¿½ï¿½ï¿½ï¿½Ê±
             _useListHead = _useListTail = NULL;
         } else {
             if (channel->_prev != NULL) {
@@ -254,19 +254,19 @@ Channel* ChannelPool::getTimeoutList(int64_t now) {
 }
 
 /*
- * °ÑaddListµÄÁ´±í¼ÓÈëµ½freeListÖÐ
+ * ï¿½ï¿½addListï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ëµ½freeListï¿½ï¿½
  *
- * @param addList±»¼ÓµÄlist
+ * @param addListï¿½ï¿½ï¿½Óµï¿½list
  */
 bool ChannelPool::appendFreeList(Channel *addList) {
-    // ÊÇ¿Õ
+    // ï¿½Ç¿ï¿½
     if (addList == NULL) {
         return true;
     }
 
     _mutex.lock();
 
-    // ÕÒtail
+    // ï¿½ï¿½tail
     Channel *tail = addList;
     while (tail->_next != NULL) {
         tail->_id = 0;
@@ -278,7 +278,7 @@ bool ChannelPool::appendFreeList(Channel *addList) {
     tail->_handler = NULL;
     tail->_args = NULL;
 
-    // ¼ÓÈëµ½_freeList
+    // ï¿½ï¿½ï¿½ëµ½_freeList
     addList->_prev = _freeListTail;
     if (_freeListTail == NULL) {
         _freeListHead = addList;

@@ -1448,6 +1448,10 @@ inline unsigned char escaped_char(unsigned char c)
   }
 }
 
+//After C99 have to use the following line to force generating symbol in library
+//Otherwise will cause "undefined reference"
+unsigned char escaped_char(unsigned char c);
+
 /* quote_type: 0 - single quotes; 1 - double quotation marks */
 int64_t parse_string(const char* src, char* dest, int64_t len, int quote_type)
 {

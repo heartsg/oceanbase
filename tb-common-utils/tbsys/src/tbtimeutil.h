@@ -25,26 +25,26 @@
 namespace tbsys {
 
 	/** 
-	 * @brief linux时间操作简单的封装
+	 * @brief linux时锟斤拷锟斤拷锟斤拷锟津单的凤拷装
 	 */
 class CTimeUtil {
 public:
     /**
-     * 得到当前时间
+     * 锟矫碉拷锟斤拷前时锟斤拷
      */
     static int64_t getTime();
     /**
-     * 得到单调递增的时间
+     * 锟矫碉拷锟斤拷锟斤拷锟斤拷锟斤拷锟斤拷时锟斤拷
      */
     static int64_t getMonotonicTime();
     /**
-     * 把int转成20080101101010的格式
+     * 锟斤拷int转锟斤拷20080101101010锟侥革拷式
      */ 
     static char *timeToStr(time_t t, char *dest);
     /**
-     * 把字节串转成时间(当地时间)
+     * 锟斤拷锟街节达拷转锟斤拷时锟斤拷(锟斤拷锟斤拷时锟斤拷)
      */
-    static int strToTime(char *str);
+    static int strToTime(const char *str);
 };
 
 }

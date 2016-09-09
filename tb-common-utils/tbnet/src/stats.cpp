@@ -20,28 +20,28 @@ namespace tbnet {
 StatCounter StatCounter::_gStatCounter;
 
 /*
- * ¹¹Ôìº¯Êý
+ * ï¿½ï¿½ï¿½ìº¯ï¿½ï¿½
  */
 StatCounter::StatCounter() {
     clear();
 }
 
 /*
- * Îö¹¹º¯Êý
+ * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
  */
 StatCounter::~StatCounter() {
 }
 
 /*
- * °ÑstatÐ´µ½logÖÐ
+ * ï¿½ï¿½statÐ´ï¿½ï¿½logï¿½ï¿½
  */
 void StatCounter::log() {
-    TBSYS_LOG(INFO, "_packetReadCnt: %u, _packetWriteCnt: %u, _dataReadCnt: %u, _dataWriteCnt: %u",
+    TBSYS_LOG(INFO, "_packetReadCnt: %lu, _packetWriteCnt: %lu, _dataReadCnt: %lu, _dataWriteCnt: %lu",
               _packetReadCnt, _packetWriteCnt, _dataReadCnt, _dataWriteCnt);
 }
 
 /*
- * Çå¿Õ
+ * ï¿½ï¿½ï¿½ï¿½
  */
 void StatCounter::clear() {
     _packetReadCnt = 0;

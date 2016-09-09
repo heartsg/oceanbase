@@ -32,7 +32,7 @@ namespace tbsys {
     #define TBFQ_FILE_QUEUE_FLAG  0x31765166     // fQv1
     
 	/** 
-	 * @brief ¶ÓÁÐÕýÔÚ´¦ÀíµÄÎ»ÖÃ
+	 * @brief ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½
 	 */
     typedef struct unsettle {
         uint32_t seqno;
@@ -40,7 +40,7 @@ namespace tbsys {
     } unsettle;
     
     /** 
-     * @brief ¶ÓÁÐ½Úµã
+     * @brief ï¿½ï¿½ï¿½Ð½Úµï¿½
      */
     typedef struct queue_item {
         unsettle pos;
@@ -50,64 +50,64 @@ namespace tbsys {
     } queue_item;
     
     /** 
-     * @brief ¶ÓÁÐÏà¹ØÐÅÏ¢
+     * @brief ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï¢
      */
     typedef struct qinfo_head {
-        uint32_t read_seqno;    // ¶ÁÎÄ¼þµÄseqno
-        int read_offset;        // ¶ÁÎÄ¼þµÄoffset
-        uint32_t write_seqno;        // Ð´ÎÄ¼þµÄseqno
-        int write_filesize;     // Ð´ÎÄ¼þµÄ´óÐ¡
-        int queue_size;         // ¶ÓÁÐ³¤¶È
-        int exit_status;        // ÍË³ö×´Ì¬
+        uint32_t read_seqno;    // ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½seqno
+        int read_offset;        // ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½offset
+        uint32_t write_seqno;        // Ð´ï¿½Ä¼ï¿½ï¿½ï¿½seqno
+        int write_filesize;     // Ð´ï¿½Ä¼ï¿½ï¿½Ä´ï¿½Ð¡
+        int queue_size;         // ï¿½ï¿½ï¿½Ð³ï¿½ï¿½ï¿½
+        int exit_status;        // ï¿½Ë³ï¿½×´Ì¬
         int reserve[2];            
-        unsettle pos[TBFQ_MAX_THREAD_COUNT]; // ÕýÔÚ´¦ÀíµÄÎ»ÖÃ
+        unsettle pos[TBFQ_MAX_THREAD_COUNT]; // ï¿½ï¿½ï¿½Ú´ï¿½ï¿½ï¿½ï¿½ï¿½Î»ï¿½ï¿½
     } qinfo_head;
     
     class CFileUtil;
     /** 
-     * @brief ½«Êý¾ÝÐ´ÈëÎÄ¼þÖÐ£¬ÔÚÎÄ¼þÖÐÊý¾ÝÊÇ°´¶ÓÁÐµÄ·½·¨´æ´¢
-     * ²¢Ìá¹©²Ù×÷¶ÓÁÐµÄ·½·¨£¬²Ù×÷ÎÄ¼þ 
+     * @brief ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð´ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½Ð£ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½ÐµÄ·ï¿½ï¿½ï¿½ï¿½æ´¢
+     * ï¿½ï¿½ï¿½á¹©ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÐµÄ·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ 
      */
     class CFileQueue {
         public:
-            CFileQueue(char *rootPath, char *queueName, int maxFileSize = TBFQ_MAX_FILE_SIZE);
+            CFileQueue(const char *rootPath, const char *queueName, int maxFileSize = TBFQ_MAX_FILE_SIZE);
             ~CFileQueue(void);
-            // Ð´ÈëÒ»Êý¾Ý
+            // Ð´ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½
             int push(void *data, int len);
-            // È¡³öÒ»Êý¾Ý
+            // È¡ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½
             queue_item *pop(uint32_t index = 0);
-            // É¾³ýÒ»Êý¾Ý
+            // É¾ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½
             int clear();
-            // ÊÇ·ñ¿ÕÁË
+            // ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½
             int isEmpty();
-            // ¼º´¦ÀíÍêÁË
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
             void finish(uint32_t index = 0);
             void backup(uint32_t index = 0);
         
         private:
-            // Êý¾ÝÎÄ¼þ¾ä±ú(¶Á)
+            // ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½(ï¿½ï¿½)
             int m_readFd;
-            // Êý¾ÝÎÄ¼þ¾ä±ú(Ð´)
+            // ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½(Ð´)
             int m_writeFd;
-            // Í·ÎÄ¼þ¾ä±ú
+            // Í·ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½
             int m_infoFd;
-            // queueµÄÍ·ÐÅÏ¢
+            // queueï¿½ï¿½Í·ï¿½ï¿½Ï¢
             qinfo_head m_head;
-            // ±£´æµÄÂ·¾¶
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Â·ï¿½ï¿½
             char *m_queuePath;
-            // ×î´óÎÄ¼þ¶à´ó¾ÍÐÂÐ´Ò»¸öÎÄ¼þ
+            // ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð´Ò»ï¿½ï¿½ï¿½Ä¼ï¿½
             int m_maxFileSize;
 
         private:
-            // ´ò¿ªÊý¾ÝÎÄ¼þÐ´
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½Ð´
             inline int openWriteFile();  
-            // ´ò¿ªÊý¾ÝÎÄ¼þ¶Á
+            // ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½ï¿½ï¿½
             inline int openReadFile(); 
-            //É¾³ý´¦ÀíÍêµÄÎÄ¼þ
+            //É¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¼ï¿½
             inline int deleteReadFile();            
             // Ð´header
             inline int writeHead();
-            // »Ö¸´Êý¾Ý
+            // ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½
             void recoverRecord();               
     };
 }

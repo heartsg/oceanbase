@@ -27,7 +27,7 @@ typedef struct st_func_set
 {
   int STDCALL (* real_mysql_server_init)(int, char **, char **);
   void STDCALL(* real_mysql_server_end)(void);
-  MYSQL_PARAMETERS *STDCALL (* real_mysql_get_parameters)(void);
+  //MYSQL_PARAMETERS *STDCALL (* real_mysql_get_parameters)(void);
   my_bool STDCALL (* real_mysql_thread_init)(void);
   void STDCALL (* real_mysql_thread_end)(void);
   my_ulonglong STDCALL (* real_mysql_num_rows)(MYSQL_RES *);

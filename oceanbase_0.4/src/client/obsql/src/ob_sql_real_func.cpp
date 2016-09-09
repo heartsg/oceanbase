@@ -38,14 +38,14 @@ int init_func_set(FuncSet *set)
   }
   
 
-  if (0 == ret)
-  {
-    set->real_mysql_get_parameters = reinterpret_cast<MYSQL_PARAMETERS* (*)()>(dlsym(handle, "mysql_get_parameters"));
-    if ((error = dlerror()) != NULL)  {
-      fprintf (stderr, "%s\n", error);
-      ret = -1;
-    }
-  }
+  //if (0 == ret)
+  //{
+  //  set->real_mysql_get_parameters = reinterpret_cast<MYSQL_PARAMETERS* (*)()>(dlsym(handle, "mysql_get_parameters"));
+  //  if ((error = dlerror()) != NULL)  {
+  //    fprintf (stderr, "%s\n", error);
+  //    ret = -1;
+  //  }
+  //}
  
   if (0 == ret)
   {

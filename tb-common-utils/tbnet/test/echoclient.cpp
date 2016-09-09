@@ -42,7 +42,7 @@ public:
     }
 
     /*
-     * ×é×°
+     * ï¿½ï¿½×°
      */
     bool encode(DataBuffer *output) {
         output->writeBytes(_str, strlen(_str));
@@ -53,7 +53,7 @@ public:
     }
 
     /*
-     * ½â¿ª
+     * ï¿½â¿ª
      */    
     bool decode(DataBuffer *input, PacketHeader *header)
     {
@@ -104,7 +104,7 @@ public:
     {
         ClientEchoPacket *echoPacket = (ClientEchoPacket*)args;
         atomic_inc(&_count);
-        if (!packet->isRegularPacket()) { // ÊÇ·ñÕý³£µÄ°ü
+        if (!packet->isRegularPacket()) { // ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä°ï¿½
             TBSYS_LOG(ERROR, "INDEX: %d => ControlPacket: %d", echoPacket->getIndex(), ((ControlPacket*)packet)->getCommand());
             _timeoutCount ++;
             if (_count.counter == gsendcount) {
@@ -116,10 +116,10 @@ public:
         _recvlen += ((ClientEchoPacket*)packet)->getRecvLen();
         //int index = (int)args;
         if (_count.counter == gsendcount) {
-            TBSYS_LOG(INFO, "INDEX: %d OK=>_count: %d gsendlen: %lld==%lld, _timeoutCount: %d", echoPacket->getIndex(), _count.counter, gsendlen,_recvlen, _timeoutCount);        
+            TBSYS_LOG(INFO, "INDEX: %d OK=>_count: %d gsendlen: %ld==%ld, _timeoutCount: %d", echoPacket->getIndex(), _count.counter, gsendlen,_recvlen, _timeoutCount);        
             transport.stop(); 
         } else {
-            TBSYS_LOG(INFO, "INDEX: %d _count: %d gsendlen: %lld==%lld, _timeoutCount: %d", echoPacket->getIndex(), _count.counter, gsendlen,_recvlen, _timeoutCount);        
+            TBSYS_LOG(INFO, "INDEX: %d _count: %d gsendlen: %ld==%ld, _timeoutCount: %d", echoPacket->getIndex(), _count.counter, gsendlen,_recvlen, _timeoutCount);        
         }
         delete echoPacket;
         delete packet;

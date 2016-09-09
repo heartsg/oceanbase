@@ -14,7 +14,7 @@ if [ -z "$1" -o "$1" = 'make' ]; then
 	mkdir build
 	cd build
 	cmake ../
-	make -j 8
+	make
 fi
 if [ -z "$1" -o "$1" = 'make' -o "$1" = 'install' ]; then 
 	make install
@@ -29,7 +29,7 @@ if [ -z "$1" -o "$1" = 'make' ]; then
 	mkdir build
 	cd build
 	cmake ../
-	make -j 8
+	make
 fi
 if [ -z "$1" -o "$1" = 'install' ]; then 
 	make install

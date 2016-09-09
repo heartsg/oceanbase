@@ -72,7 +72,7 @@ my_bool is_in_transaction(ObSQLMySQL *mysql);
 //================MySQL Client API==================================
 int STDCALL mysql_server_init(int, char **, char **);
 void STDCALL mysql_server_end(void);
-MYSQL_PARAMETERS *STDCALL mysql_get_parameters(void);
+//MYSQL_PARAMETERS *STDCALL mysql_get_parameters(void);
 my_bool STDCALL mysql_thread_init(void);
 void STDCALL mysql_thread_end(void);
 my_ulonglong STDCALL mysql_num_rows(MYSQL_RES *);
